@@ -16,12 +16,22 @@ public class Cs_PlayerMovement : MonoBehaviour {
 	// Update is called once per frame
 
 	void FixedUpdate () {
-        Debug.Log(Input.GetAxis("Horizontal"));
+        
             
         _newspeed = _rb.velocity;
+
         _newspeed.x = _newspeed.x + Input.GetAxis("Horizontal") * _acceleration * Time.deltaTime;
+
+        if (_newspeed.x > _speed)
+        {
+            _newspeed.x = _speed;
+        }
+        else if (_newspeed.x < -_speed)
+        {
+            _newspeed.x = -_speed;
+        }
+
         _rb.velocity = _newspeed;
-        
-	}
+    }
    
 }
