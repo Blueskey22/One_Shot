@@ -10,8 +10,13 @@ public class Cs_PlayerMovement : MonoBehaviour {
     public float _noInputDeceleration;
     public float _jumpSpeed;
 
+    public float _wallJumpSpeedUp;
+    public float _wallJumpSpeedLateral;
+
     private Rigidbody2D _rb;
     private bool _isGrounded;
+    private bool _isOnWallL;
+    private bool _isOnWallR;
 
 	// Use this for initialization
 	void Start () {
@@ -37,6 +42,20 @@ public class Cs_PlayerMovement : MonoBehaviour {
         _rb.velocity = _newspeed;
     }
    
+    public void SetGrounded(bool g)
+    {
+        _isGrounded = g;
+    }
+
+    public void SetIsOnWallR(bool r)
+    {
+        _isOnWallR = r;
+    }
+
+    public void SetIsOnWallL(bool l)
+    {
+        _isOnWallR = l;
+    }
 
     void PlayerMovement()
     {
@@ -83,15 +102,43 @@ public class Cs_PlayerMovement : MonoBehaviour {
     void CheckJump()
     {
         Debug.Log(Input.GetAxis("Jump"));
+        Debug.Log(_isGrounded);
         if (Input.GetAxis("Jump") > 0)
         {
-            Debug.Log("Hello there");
-            Jump();
+            //Debug.Log("Hello there");
+            if (_isGrounded)
+            {
+                Jump();
+            }
+            else if (_isOnWallR && _isOnWallL)
+            {
+                Jump();
+            }
+            else if (_isOnWallR)
+            {
+                WallJump(true);
+            }
+            else if (_isOnWallL)
+            {
+                WallJump(false);
+            }
         }
     }
 
     void Jump()
     {
         _newspeed.y = _newspeed.y + _jumpSpeed;
+    }
+
+    void WallJump(bool r)
+    {
+        if (r)
+        {
+            _newspeed.x = _newspeed.x + _wallJumpSpeedLateral;
+        }
+        else _newspeed.x = _newspeed.x + -_wallJumpSpeedLateral;
+
+        _newspeed.y = _newspeed.y + _wallJumpSpeedUp;
+        
     }
 }
